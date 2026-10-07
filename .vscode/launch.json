@@ -1,0 +1,38 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "grower_tracker_flutter",
+            "cwd": "${workspaceFolder}/grower_tracker_flutter",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "grower_tracker_server",
+            "cwd": "${workspaceFolder}/grower_tracker_server",
+            "request": "launch",
+            "type": "dart",
+            "preLaunchTask": "docker_compose_up",
+            "program": "bin/main.dart",
+            "env": {
+                "SERVERPOD_PASSWORD_database": "bzgzX68bkoM3S_b2Qf0gXdk6ZQv4qeao"
+            },
+            "args": [
+                "--apply-migrations"
+            ]
+        }
+    ],
+    "compounds": [
+        {
+            "name": "grower_tracker (full stack)",
+            "configurations": [
+                "grower_tracker_server",
+                "grower_tracker_flutter"
+            ],
+            "presentation": {
+                "order": 1
+            }
+        }
+    ]
+}
