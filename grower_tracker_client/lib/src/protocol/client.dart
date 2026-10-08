@@ -21,6 +21,26 @@ import 'package:grower_tracker_client/src/protocol/greetings/greeting.dart'
     as _i5;
 import 'protocol.dart' as _i6;
 
+/// {@category Endpoint}
+class EndpointAnonymousIdp extends _i1.EndpointAnonymousIdpBase {
+  EndpointAnonymousIdp(_i2.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'anonymousIdp';
+
+  /// Creates a new anonymous account and returns its session.
+  ///
+  /// Invokes the [AnonymousIdp.beforeAnonymousAccount] callback if configured,
+  /// which may prevent account creation if the endpoint is protected.
+  @override
+  _i3.Future<_i4.AuthSuccess> login({String? token}) =>
+      caller.callServerEndpoint<_i4.AuthSuccess>(
+        'anonymousIdp',
+        'login',
+        {'token': token},
+      );
+}
+
 /// By extending [EmailIdpBaseEndpoint], the email identity provider endpoints
 /// are made available on the server and enable the corresponding sign-in widget
 /// on the client.
@@ -300,11 +320,14 @@ class Client extends _i2.ServerpodClientShared {
          disconnectStreamsOnLostInternetConnection:
              disconnectStreamsOnLostInternetConnection,
        ) {
+    anonymousIdp = EndpointAnonymousIdp(this);
     emailIdp = EndpointEmailIdp(this);
     jwtRefresh = EndpointJwtRefresh(this);
     greeting = EndpointGreeting(this);
     modules = Modules(this);
   }
+
+  late final EndpointAnonymousIdp anonymousIdp;
 
   late final EndpointEmailIdp emailIdp;
 
@@ -316,6 +339,7 @@ class Client extends _i2.ServerpodClientShared {
 
   @override
   Map<String, _i2.EndpointRef> get endpointRefLookup => {
+    'anonymousIdp': anonymousIdp,
     'emailIdp': emailIdp,
     'jwtRefresh': jwtRefresh,
     'greeting': greeting,

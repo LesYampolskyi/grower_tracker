@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:serverpod_auth_idp_server/providers/email.dart';
+import 'package:serverpod_auth_idp_server/providers/anonymous.dart';
 
 import 'src/generated/endpoints.dart';
 import 'src/generated/protocol.dart';
@@ -24,10 +25,11 @@ void run(List<String> args) async {
     ],
     identityProviderBuilders: [
       // Configure the email identity provider for email/password authentication.
-      EmailIdpConfigFromPasswords(
-        sendRegistrationVerificationCode: _sendRegistrationCode,
-        sendPasswordResetVerificationCode: _sendPasswordResetCode,
-      ),
+      // EmailIdpConfigFromPasswords(
+      //   sendRegistrationVerificationCode: _sendRegistrationCode,
+      //   sendPasswordResetVerificationCode: _sendPasswordResetCode,
+      // ),
+      AnonymousIdpConfig(),
     ],
   );
 
