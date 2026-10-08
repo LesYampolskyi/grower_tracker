@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:grower_tracker_server/src/telegram/telegram_bot_service.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:serverpod_auth_idp_server/providers/email.dart';
@@ -11,9 +13,18 @@ import 'src/web/routes/app_config_route.dart';
 import 'src/web/routes/root.dart';
 
 /// The starting point of the Serverpod server.
-void run(List<String> args) async {
+Future<void> run(List<String> args) async {
   // Initialize Serverpod and connect it with your generated code.
   final pod = Serverpod(args, Protocol(), Endpoints());
+
+  /// Initialize the Telegram bot.
+  final botToken = pod.getPassword("telegramToken");
+  if (botToken == null) {
+    throw "Telegram token not found";
+  }
+  final bot = TelegramBotService(botToken);
+  // Process Keep-Alive
+  unawaited(bot.start());
 
   // Initialize authentication services for the server.
   // Token managers will be used to validate and issue authentication keys,
@@ -25,10 +36,25 @@ void run(List<String> args) async {
     ],
     identityProviderBuilders: [
       // Configure the email identity provider for email/password authentication.
-      // EmailIdpConfigFromPasswords(
-      //   sendRegistrationVerificationCode: _sendRegistrationCode,
-      //   sendPasswordResetVerificationCode: _sendPasswordResetCode,
-      // ),
+      EmailIdpConfigFromPasswords(
+        // sendRegistrationVerificationCode: _sendRegistrationCode,
+        sendRegistrationVerificationCode:
+            (
+              session, {
+              required accountRequestId,
+              required email,
+              required transaction,
+              required verificationCode,
+            }) => _sendRegistrationCode(
+              session,
+              email: email,
+              accountRequestId: accountRequestId,
+              transaction: transaction,
+              verificationCode: verificationCode,
+              bot: bot,
+            ),
+        sendPasswordResetVerificationCode: _sendPasswordResetCode,
+      ),
       AnonymousIdpConfig(),
     ],
   );
@@ -74,10 +100,28 @@ void run(List<String> args) async {
       '/app/**',
     );
   }
-
   // Start the server.
   await pod.start();
 }
+
+// Future<void> initTelegramBot(
+//   TelegramBotService bot,
+//   String? botToken,
+// ) async {
+//   // final botToken = pod.passwords['telegramBotToken'];
+//   if (botToken != null && botToken.isNotEmpty) {
+//     try {
+//       // Инициализируем наш сервис бота
+//       // await TelegramBotService.instance.initialize(botToken);
+//       // await bot.initialize(botToken);
+//       print('TelegramBotService успешно запущен.');
+//     } catch (e, stackTrace) {
+//       print('Ошибка при запуске TelegramBotService: $e\n$stackTrace');
+//     }
+//   } else {
+//     print('Предупреждение: telegramBotToken не найден в config/passwords.yaml');
+//   }
+// }
 
 void _sendRegistrationCode(
   Session session, {
@@ -85,11 +129,25 @@ void _sendRegistrationCode(
   required UuidValue accountRequestId,
   required String verificationCode,
   required Transaction? transaction,
+  required TelegramBotService bot,
 }) {
   // NOTE: Here you call your mail service to send the verification code to
   // the user. For testing, we will just log the verification code.
+
+  bot.sendMessageToUser(11, "Registration code ($email): $verificationCode");
   session.log('[EmailIdp] Registration code ($email): $verificationCode');
 }
+// void _sendRegistrationCode(
+//   Session session, {
+//   required String email,
+//   required UuidValue accountRequestId,
+//   required String verificationCode,
+//   required Transaction? transaction,
+// }) {
+//   // NOTE: Here you call your mail service to send the verification code to
+//   // the user. For testing, we will just log the verification code.
+//   session.log('[EmailIdp] Registration code ($email): $verificationCode');
+// }
 
 void _sendPasswordResetCode(
   Session session, {
