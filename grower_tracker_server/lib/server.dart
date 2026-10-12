@@ -17,15 +17,6 @@ Future<void> run(List<String> args) async {
   // Initialize Serverpod and connect it with your generated code.
   final pod = Serverpod(args, Protocol(), Endpoints());
 
-  /// Initialize the Telegram bot.
-  final botToken = pod.getPassword("telegramToken");
-  if (botToken == null) {
-    throw "Telegram token not found";
-  }
-  final bot = TelegramBotService(botToken);
-  // Process Keep-Alive
-  unawaited(bot.start());
-
   // Initialize authentication services for the server.
   // Token managers will be used to validate and issue authentication keys,
   // and the identity providers will be the authentication options available for users.
@@ -51,7 +42,7 @@ Future<void> run(List<String> args) async {
               accountRequestId: accountRequestId,
               transaction: transaction,
               verificationCode: verificationCode,
-              bot: bot,
+              // bot: bot,
             ),
         sendPasswordResetVerificationCode: _sendPasswordResetCode,
       ),
@@ -100,28 +91,11 @@ Future<void> run(List<String> args) async {
       '/app/**',
     );
   }
+  // Set up Telegram Bot
+  setUpTelegramBot(pod);
   // Start the server.
   await pod.start();
 }
-
-// Future<void> initTelegramBot(
-//   TelegramBotService bot,
-//   String? botToken,
-// ) async {
-//   // final botToken = pod.passwords['telegramBotToken'];
-//   if (botToken != null && botToken.isNotEmpty) {
-//     try {
-//       // Инициализируем наш сервис бота
-//       // await TelegramBotService.instance.initialize(botToken);
-//       // await bot.initialize(botToken);
-//       print('TelegramBotService успешно запущен.');
-//     } catch (e, stackTrace) {
-//       print('Ошибка при запуске TelegramBotService: $e\n$stackTrace');
-//     }
-//   } else {
-//     print('Предупреждение: telegramBotToken не найден в config/passwords.yaml');
-//   }
-// }
 
 void _sendRegistrationCode(
   Session session, {
@@ -129,12 +103,12 @@ void _sendRegistrationCode(
   required UuidValue accountRequestId,
   required String verificationCode,
   required Transaction? transaction,
-  required TelegramBotService bot,
+  // required TelegramBotService bot,
 }) {
   // NOTE: Here you call your mail service to send the verification code to
   // the user. For testing, we will just log the verification code.
 
-  bot.sendMessageToUser(11, "Registration code ($email): $verificationCode");
+  // bot.sendMessageToUser(11, "Registration code ($email): $verificationCode");
   session.log('[EmailIdp] Registration code ($email): $verificationCode');
 }
 // void _sendRegistrationCode(
@@ -159,4 +133,42 @@ void _sendPasswordResetCode(
   // NOTE: Here you call your mail service to send the verification code to
   // the user. For testing, we will just log the verification code.
   session.log('[EmailIdp] Password reset code ($email): $verificationCode');
+}
+
+void setUpTelegramBot(Serverpod pod) async {
+  /// Initialize Telegram bot.
+  final botToken = pod.getPassword("telegramToken");
+  if (botToken == null) {
+    throw "Telegram token not found";
+  }
+  final botService = TelegramBotService(botToken, pod);
+  final isProduction = pod.runMode == ServerpodRunMode.production;
+
+  try {
+    final webhookUrl = pod.getPassword("webhookUrl");
+    if (webhookUrl == null) throw "webhookUrl is not assign!";
+
+    if (!isProduction) {
+      // It is important not to await the keyboard. If used, processing will
+      // halt and subsequent code will not execute
+      unawaited(
+        botService.bot.startWebhookDev(
+          webhookUrl,
+          port: 8092,
+          webhookPath: "/telegram/webhook",
+        ),
+      );
+    } else {
+      // Prod Webhook
+      print("=====else it is production!!!!");
+      throw "Prod webhook is Not implemented";
+      botService.bot.startWebhook(
+        webhookUrl: webhookUrl,
+        port: 8082,
+        webhookPath: "/telegram/webhook",
+      );
+    }
+  } catch (e) {
+    throw "Problems with webhook in telegram bot";
+  }
 }

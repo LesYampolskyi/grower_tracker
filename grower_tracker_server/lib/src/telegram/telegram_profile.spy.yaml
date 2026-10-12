@@ -1,0 +1,15 @@
+class: TelegramProfile
+table: telegram_profile
+fields:
+    id: UuidValue?, defaultPersist=random_v7
+    
+    telegramId: int
+    chatId: int
+    firstName: String?
+    lastName: String?
+    username: String?
+
+indexes:
+  telegram_profile_unique_telegramIdx:
+    fields: telegramId
+    unique: true
