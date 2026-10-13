@@ -13,3 +13,4 @@ jwtRefresh:
   - refreshAccessToken:
 greeting:
   - hello:
+  - telegramUsers:

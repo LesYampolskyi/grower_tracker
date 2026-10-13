@@ -31,6 +31,7 @@ dependencies:
     sdk: flutter
   grower_tracker_client:
     path: ../grower_tracker_client
+  intl: ^0.20.2
   serverpod_auth_idp_flutter: 3.4.13
   serverpod_flutter: 3.4.13
 

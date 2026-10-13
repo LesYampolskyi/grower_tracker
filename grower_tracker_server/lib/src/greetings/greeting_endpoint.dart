@@ -31,4 +31,9 @@ class GreetingEndpoint extends Endpoint {
       timestamp: DateTime.now(),
     );
   }
+
+  Future<List<TelegramProfile>> telegramUsers(Session session) async {
+    var users = await TelegramProfile.db.find(session);
+    return users;
+  }
 }

@@ -1,10 +1,14 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:grower_tracker_client/grower_tracker_client.dart';
 import 'package:flutter/material.dart';
+import 'package:grower_tracker_flutter/features/garden/add_plant_screen.dart';
 import 'package:grower_tracker_flutter/screens/sign_in_screen.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 
-import 'screens/greetings_screen.dart';
+import 'screens/home_screen.dart';
 
 /// Sets up a global client object that can be used to talk to the server from
 /// anywhere in our app. The client is generated from your server code
@@ -29,9 +33,15 @@ void main() async {
   //
   // Otherwise, the server URL is fetched from the assets/config.json file or
   // defaults to http://$localhost:8080/ if not found.
-  final serverUrl = await getServerUrl();
+  // final serverUrl = await getServerUrl();
 
-  client = Client(serverUrl)
+  const String _prodUrl = String.fromEnvironment(
+    'SERVER_URL',
+    defaultValue: '',
+  );
+  String? ip = "192.168.1.101"; // = "192.168.1.101";
+  var serverUlr = _serverUrl(_prodUrl, ip);
+  client = Client(serverUlr)
     ..connectivityMonitor = FlutterConnectivityMonitor()
     ..authSessionManager = FlutterAuthSessionManager();
 
@@ -56,37 +66,51 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Serverpod Demo',
       theme: _buildTheme(Brightness.light),
       darkTheme: _buildTheme(Brightness.dark),
       themeMode: ThemeMode.system,
-      home: const MyHomePage(title: 'Serverpod Example'),
+      initialRoute: '/auth',
+      routes: {
+        '/auth': (context) => const SignInScreen(),
+        '/app': (context) => const HomeScreen(),
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == 'app/garden/detail') {
+          return MaterialPageRoute(builder: (_) => AddPlantScreen());
+        }
+
+        return null;
+      },
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      // body: const GreetingsScreen(),
-      // To test authentication in this example app, uncomment the line below
-      // and comment out the line above. This wraps the GreetingsScreen with a
-      // SignInScreen, which automatically shows a sign-in UI when the user is
-      // not authenticated and displays the GreetingsScreen once they sign in.
-      //
-      body: SignInScreen(
-        child: GreetingsScreen(
-          onSignOut: () async {
-            await client.auth.signOutDevice();
-          },
-        ),
-      ),
-    );
+String _serverUrl(String prodUrl, String? yourIp) {
+  // If this is a production build (prodUrl passed via --dart-define)
+  if (prodUrl.isNotEmpty) {
+    return prodUrl;
   }
+
+  if (yourIp == null || yourIp == '') {
+    throw "Error! You do not specify you ip address for android";
+  }
+
+  // If this is debug mode (kDebugMode):
+  if (kDebugMode) {
+    try {
+      if (Platform.isAndroid) {
+        return 'http://${yourIp}:8080/'; // Special IP for the Android emulator
+      }
+    } catch (_) {
+      // Ignore error if running on Web where Platform is not available
+    }
+
+    // For iOS simulator, macOS, Windows, Linux, or a real PC
+    return 'http://localhost:8080/';
+  }
+
+  // Safe fallback if none of the above matched
+  return 'http://localhost:8080/';
 }

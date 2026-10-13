@@ -19,7 +19,9 @@ import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _i4;
 import 'package:grower_tracker_client/src/protocol/greetings/greeting.dart'
     as _i5;
-import 'protocol.dart' as _i6;
+import 'package:grower_tracker_client/src/protocol/telegram/telegram_profile.dart'
+    as _i6;
+import 'protocol.dart' as _i7;
 
 /// {@category Endpoint}
 class EndpointAnonymousIdp extends _i1.EndpointAnonymousIdpBase {
@@ -278,6 +280,13 @@ class EndpointGreeting extends _i2.EndpointRef {
         'hello',
         {'name': name},
       );
+
+  _i3.Future<List<_i6.TelegramProfile>> telegramUsers() =>
+      caller.callServerEndpoint<List<_i6.TelegramProfile>>(
+        'greeting',
+        'telegramUsers',
+        {},
+      );
 }
 
 class Modules {
@@ -311,7 +320,7 @@ class Client extends _i2.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i6.Protocol(),
+         _i7.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
