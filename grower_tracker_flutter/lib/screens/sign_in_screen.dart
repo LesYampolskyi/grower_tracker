@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:grower_tracker_flutter/screens/auth/sign_in_widget.dart'
-    show SignInWidget;
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart'
     as auth;
 
@@ -43,7 +41,7 @@ class _SignInScreenState extends State<SignInScreen> {
     return _isSignedIn
         ? widget.child
         : Center(
-            child: SignInWidget(
+            child: auth.SignInWidget(
               disableAnonymousSignInWidget: false,
               client: client,
               onAuthenticated: () {
