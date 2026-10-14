@@ -14,9 +14,20 @@ class HomeScreen extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
+          title: Text(
+            "Grower Tracker",
+            textAlign: TextAlign.center,
+          ),
+
+          backgroundColor: Colors.red,
           bottom: const TabBar(
             tabs: [
-              Tab(child: Text('Telegram users')),
+              Tab(
+                child: Text(
+                  'Telegram users',
+                  textAlign: TextAlign.center,
+                ),
+              ),
               Tab(child: Text('Garden')),
               Tab(child: Text('Settings')),
             ],

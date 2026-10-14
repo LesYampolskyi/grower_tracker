@@ -15,17 +15,56 @@ class _PlantingDateState extends State<PlantingDate> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     String formattedDate = DateFormat(
-      'd MMMM yyyy',
+      'dd MMM yyyy HH:mm',
+      'en_US',
     ).format(_selectedDate);
-    var label = "$formattedDate:${_selectedTime.hour}:${_selectedTime.minute}";
+    var label = formattedDate;
     return Row(
       children: [
-        Text("Sowing: "),
-        OutlinedButton.icon(
-          onPressed: () async => _pickDateTime(context),
-          icon: const Icon(Icons.date_range_sharp),
-          label: Text(label),
+        Expanded(
+          flex: 1,
+          child: Text(
+            "Sown on: ",
+            style: theme.textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 2,
+          child: InkWell(
+            onTap: () => _pickDateTime(context),
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.shade300),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.calendar_today_outlined,
+                    size: 18,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ],
     );

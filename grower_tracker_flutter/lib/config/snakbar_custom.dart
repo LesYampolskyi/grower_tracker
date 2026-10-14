@@ -6,6 +6,7 @@ extension ShowSnakBar on BuildContext {
     required Color backgroundColor,
     required Color foregroundColor,
   }) {
+    ScaffoldMessenger.of(this).hideCurrentSnackBar();
     ScaffoldMessenger.of(this).showSnackBar(
       SnackBar(
         content: Text(message, style: TextStyle(color: foregroundColor)),

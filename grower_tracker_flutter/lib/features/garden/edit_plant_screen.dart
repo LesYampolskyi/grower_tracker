@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grower_tracker_client/grower_tracker_client.dart';
 import 'package:grower_tracker_flutter/config/snakbar_custom.dart';
+import 'package:grower_tracker_flutter/features/garden/action_button.dart';
 import 'package:grower_tracker_flutter/features/garden/cultivation_field.dart';
 import 'package:grower_tracker_flutter/features/garden/plant_name_field.dart';
 import 'package:grower_tracker_flutter/features/garden/plant_type_selector.dart';
@@ -47,62 +48,78 @@ class _EditPlantScreenState extends State<EditPlantScreen> {
     colors = Theme.of(context).colorScheme;
 
     return Scaffold(
+      backgroundColor: Colors.purple,
       appBar: AppBar(
-        title: Text("Edit the plant"),
+        title: Text(
+          "Edit the plant",
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
       ),
-      body: Container(
-        color: Colors.purple,
-        child: Center(
-          child: Column(
-            spacing: 20,
-            children: [
-              Container(
-                width: double.infinity,
-                alignment: Alignment.centerRight,
-                child: Text(
-                  "TelegramId: ${plant.telegramId.toString()}",
+      body: Center(
+        child: Container(
+          padding: const EdgeInsets.all(12.0),
+          child: Container(
+            padding: const EdgeInsets.all(18.0),
+            decoration: BoxDecoration(
+              color: Colors.black45,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 24,
+                  offset: const Offset(0, 8),
                 ),
-              ),
-              Container(
-                width: double.infinity,
-                alignment: Alignment.centerRight,
-                child: Text(
-                  "AuthId: ${plant.authUserId.toString()}",
-                ),
-              ),
+              ],
+            ),
+            child: SingleChildScrollView(
+              child: Center(
+                child: Column(
+                  spacing: 20,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        "TelegramId: ${plant.telegramId.toString()}",
+                      ),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        "AuthId: ${plant.authUserId.toString()}",
+                      ),
+                    ),
 
-              PlantTypeSelector(
-                initCropType: cropType,
-                onCropTypeChanged: ((String, String) value) {
-                  cropType = value;
-                },
-              ),
-              PlantingDate(
-                onDateChanged: (date) {
-                  plantedAt = date;
-                },
-              ),
-              PlantNameField(
-                controller: labeController,
-              ),
-              CultivationField(controller: daysController),
-              ElevatedButton(
-                onPressed: () async {
-                  await update(context);
-                },
-                child: const Text("Edit"),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
+                    PlantTypeSelector(
+                      initCropType: cropType,
+                      onCropTypeChanged: ((String, String) value) {
+                        cropType = value;
+                      },
+                    ),
+                    PlantingDate(
+                      onDateChanged: (date) {
+                        plantedAt = date;
+                      },
+                    ),
+                    PlantNameField(
+                      controller: labeController,
+                    ),
+                    CultivationField(controller: daysController),
+                    ActionButton(
+                      onPressed: () async => await update(context),
+                      label: "Edit",
+                    ),
+                    ActionButton(
+                      onPressed: () async => await delete(context),
+                      label: "Delete",
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                    ),
+                  ],
                 ),
-                onPressed: () async {
-                  await delete(context);
-                },
-                child: Text("Delete"),
               ),
-            ],
+            ),
           ),
         ),
       ),

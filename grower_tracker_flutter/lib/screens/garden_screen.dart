@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grower_tracker_client/grower_tracker_client.dart';
+import 'package:grower_tracker_flutter/config/snakbar_custom.dart';
+import 'package:grower_tracker_flutter/features/garden/action_button.dart';
 import 'package:grower_tracker_flutter/features/garden/plant_card.dart';
 import 'package:grower_tracker_flutter/main.dart';
 
@@ -15,17 +17,42 @@ class _GardenScreenState extends State<GardenScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var colors = Theme.of(context).colorScheme;
+
     return Column(
       children: [
-        ElevatedButton(
-          onPressed: () async {
-            var loaded = await client.garden.allByUser();
-            setState(() {
-              items = loaded;
-            });
-          },
-          child: Text("Update"),
+        SizedBox(
+          height: 20,
         ),
+        ActionButton(
+          onPressed: () async {
+            context.showSnackBar(
+              message: 'Loading....',
+              backgroundColor: Colors.green,
+              foregroundColor: Colors.white,
+            );
+            try {
+              var loaded = await client.garden.allByUser();
+              setState(() {
+                items = loaded;
+              });
+              if (!context.mounted) return;
+              context.showSnackBar(
+                message: 'Plants are loaded',
+                backgroundColor: colors.primaryContainer,
+                foregroundColor: colors.onPrimaryContainer,
+              );
+            } catch (e) {
+              context.showSnackBar(
+                message: 'Error',
+                backgroundColor: colors.primaryContainer,
+                foregroundColor: colors.onPrimaryContainer,
+              );
+            }
+          },
+          label: "Update",
+        ),
+
         Expanded(
           child: GridView.builder(
             padding: const EdgeInsets.all(10),

@@ -16,6 +16,8 @@ class PlantCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 3,
+      color: const Color.fromARGB(255, 219, 222, 227),
+
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(
           12,
@@ -38,6 +40,7 @@ class PlantCard extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
+                  color: Colors.black87,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

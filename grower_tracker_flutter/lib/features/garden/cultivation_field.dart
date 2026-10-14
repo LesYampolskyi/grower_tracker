@@ -7,6 +7,8 @@ class CultivationField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return TextField(
       controller: controller,
       keyboardType: TextInputType.number,
@@ -14,10 +16,26 @@ class CultivationField extends StatelessWidget {
         FilteringTextInputFormatter.digitsOnly,
       ],
 
-      decoration: const InputDecoration(
-        border: OutlineInputBorder(),
+      decoration: InputDecoration(
         labelText: 'Cultivation days',
         hintText: 'Example: 42',
+        prefixIcon: const Icon(Icons.numbers_rounded),
+        filled: false,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: Colors.grey.shade200),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(
+            color: theme.colorScheme.primary,
+            width: 1.5,
+          ),
+        ),
       ),
     );
   }
