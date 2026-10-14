@@ -28,7 +28,7 @@ class TelegramBotService {
       var username = ctx.chat?.username;
       var telegramId = ctx.from?.id;
       if (chatId == null && telegramId == null) {
-        throw "Invalid request. No chait id or telegram_id";
+        throw Exception("Invalid request. No chat_id or telegram_id");
       }
       try {
         TelegramProfile? user = await TelegramProfile.db.findFirstRow(
@@ -56,7 +56,7 @@ class TelegramBotService {
           await ctx.reply("You are already registered!");
         }
       } catch (e) {
-        throw "Can't register Telegram user";
+        throw "Failed to register Telegram user";
       }
     });
 
@@ -97,9 +97,79 @@ class TelegramBotService {
       var telegramId = ctx.from?.id;
       await ctx.reply(
         'Your id is: $telegramId\n'
-        'Yout username: $username',
+        'Your username: $username',
       );
     });
+
+    // DEMO
+    bot.command('confirm', (ctx) async {
+      var yesButton = InlineKeyboard.buttonText('Yes', 'demo_confirm_yes');
+      var noButton = InlineKeyboard.buttonText('No', 'confirm_no');
+      var buttons = [
+        [yesButton, noButton],
+      ];
+      var keyboard = InlineKeyboard.fromButtons(buttons);
+      var chatId = ctx.chat?.id;
+      if (chatId == null) {
+        throw Exception("Invalid context in Telegram. No chat_id");
+      }
+      await bot.api.sendMessage(
+        ChatID(chatId),
+        'Test. No actions. Link to user <User>?',
+        replyMarkup: keyboard,
+      );
+    });
+
+    // DEMO
+    bot.callbackQuery("demo_confirm_yes", (ctx) async {
+      await ctx.answerCallbackQuery(text: 'Accepted!');
+
+      await ctx.editMessageText(
+        '✅ Action successfully confirmed.',
+      );
+    });
+
+    bot.callbackQuery("confirm_yes", (ctx) async {
+      var chatId = ctx.id.id;
+      var message = ctx.text;
+      if (message == null) throw "Invalid confirmation data in Telegram!";
+      var from = message.split("->")[1].trim();
+      from = from.substring(0, from.length - 1);
+      final session = await pod.createSession();
+      var profile = await TelegramProfile.db.findFirstRow(
+        session,
+        where: (t) => t.telegramId.equals(chatId),
+      );
+
+      if (profile == null) throw Exception("Telegram profile not found");
+      var profileId = profile.id;
+      if (profileId == null) throw Exception("Telegram ID not found");
+
+      var items = await PlantModel.db.updateWhere(
+        session,
+        columnValues: (t) => [
+          t.telegramId(profileId),
+        ],
+        where: (t) => t.authUserId.equals(UuidValue.fromString(from)),
+      );
+
+      // Always answer the callback query to remove the loading spinner from
+      // the button.
+      await ctx.answerCallbackQuery(text: 'Accepted!');
+
+      // Edit the message by removing the inline keyboard and updating the text.
+      await ctx.editMessageText(
+        '✅ Action successfully confirmed.. ${items.length} Rows updated successfully',
+      );
+    });
+
+    bot.callbackQuery("confirm_no", (ctx) async {
+      await ctx.answerCallbackQuery(text: 'Cancel');
+
+      // Edit the message.
+      await ctx.editMessageText('❌ Action was canceled.');
+    });
+
     // Or use bot.on(CallbackQuery) for general handling
     bot.onCallbackQuery((ctx) async {
       final data = ctx.callbackQuery?.data;
@@ -111,7 +181,7 @@ class TelegramBotService {
         if (parts.length < 2) return;
 
         var item = parts[1];
-        await ctx.answerCallbackQuery(text: "Товар #$item куплен!");
+        await ctx.answerCallbackQuery(text: "#$item is picked!!");
         // Optionally edit the message
         await ctx.editMessageText('You clicked the button of $item!');
       }
@@ -120,7 +190,23 @@ class TelegramBotService {
     /// Handle all text
     bot.onText((ctx) async {
       final text = ctx.text;
-      await ctx.reply('Эхо: $text');
+      await ctx.reply('Echo: $text');
     });
+  }
+
+  /// Add to the the mobile user
+  Future<void> askConfirmation(int chatId, String messageFrom) async {
+    var yesButton = InlineKeyboard.buttonText('Yes', 'confirm_yes');
+    var noButton = InlineKeyboard.buttonText('No', 'confirm_no');
+    var buttons = [
+      [yesButton, noButton],
+    ];
+    final keyboard = InlineKeyboard.fromButtons(buttons);
+
+    await bot.api.sendMessage(
+      ChatID(chatId),
+      'Add to the user -> $messageFrom?',
+      replyMarkup: keyboard,
+    );
   }
 }

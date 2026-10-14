@@ -334,6 +334,37 @@ class EndpointGreeting extends _i2.EndpointRef {
       );
 }
 
+/// {@category Endpoint}
+class EndpointSchedules extends _i2.EndpointRef {
+  EndpointSchedules(_i2.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'schedules';
+
+  /// Requests permission from the selected Telegram user to link their account
+  /// to the mobile app user.
+  _i3.Future<void> askConfirmationFromTelegramUser(int chatId) =>
+      caller.callServerEndpoint<void>(
+        'schedules',
+        'askConfirmationFromTelegramUser',
+        {'chatId': chatId},
+      );
+
+  _i3.Future<bool> setSchedule(String message) =>
+      caller.callServerEndpoint<bool>(
+        'schedules',
+        'setSchedule',
+        {'message': message},
+      );
+
+  _i3.Future<_i7.TelegramProfile?> findChatId(String from) =>
+      caller.callServerEndpoint<_i7.TelegramProfile?>(
+        'schedules',
+        'findChatId',
+        {'from': from},
+      );
+}
+
 class Modules {
   Modules(Client client) {
     serverpod_auth_idp = _i1.Caller(client);
@@ -379,6 +410,7 @@ class Client extends _i2.ServerpodClientShared {
     jwtRefresh = EndpointJwtRefresh(this);
     garden = EndpointGarden(this);
     greeting = EndpointGreeting(this);
+    schedules = EndpointSchedules(this);
     modules = Modules(this);
   }
 
@@ -392,6 +424,8 @@ class Client extends _i2.ServerpodClientShared {
 
   late final EndpointGreeting greeting;
 
+  late final EndpointSchedules schedules;
+
   late final Modules modules;
 
   @override
@@ -401,6 +435,7 @@ class Client extends _i2.ServerpodClientShared {
     'jwtRefresh': jwtRefresh,
     'garden': garden,
     'greeting': greeting,
+    'schedules': schedules,
   };
 
   @override

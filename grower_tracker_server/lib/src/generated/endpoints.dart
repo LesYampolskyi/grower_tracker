@@ -17,12 +17,15 @@ import '../auth/email_idp_endpoint.dart' as _i3;
 import '../auth/jwt_refresh_endpoint.dart' as _i4;
 import '../garden/garden_endpoint.dart' as _i5;
 import '../greetings/greeting_endpoint.dart' as _i6;
+import '../schedules/schedules_endpoint.dart' as _i7;
 import 'package:grower_tracker_server/src/generated/garden/models/plant_model.dart'
-    as _i7;
-import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _i8;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _i9;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+    as _i10;
+import 'package:grower_tracker_server/src/generated/future_calls.dart' as _i11;
+export 'future_calls.dart' show ServerpodFutureCallsGetter;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -56,6 +59,12 @@ class Endpoints extends _i1.EndpointDispatch {
         ..initialize(
           server,
           'greeting',
+          null,
+        ),
+      'schedules': _i7.SchedulesEndpoint()
+        ..initialize(
+          server,
+          'schedules',
           null,
         ),
     };
@@ -318,7 +327,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'plant': _i1.ParameterDescription(
               name: 'plant',
-              type: _i1.getType<_i7.PlantModel>(),
+              type: _i1.getType<_i8.PlantModel>(),
               nullable: false,
             ),
           },
@@ -336,7 +345,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'plant': _i1.ParameterDescription(
               name: 'plant',
-              type: _i1.getType<_i7.PlantModel>(),
+              type: _i1.getType<_i8.PlantModel>(),
               nullable: false,
             ),
           },
@@ -354,7 +363,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'plant': _i1.ParameterDescription(
               name: 'plant',
-              type: _i1.getType<_i7.PlantModel>(),
+              type: _i1.getType<_i8.PlantModel>(),
               nullable: false,
             ),
           },
@@ -403,9 +412,77 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
-    modules['serverpod_auth_idp'] = _i8.Endpoints()
+    connectors['schedules'] = _i1.EndpointConnector(
+      name: 'schedules',
+      endpoint: endpoints['schedules']!,
+      methodConnectors: {
+        'askConfirmationFromTelegramUser': _i1.MethodConnector(
+          name: 'askConfirmationFromTelegramUser',
+          params: {
+            'chatId': _i1.ParameterDescription(
+              name: 'chatId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['schedules'] as _i7.SchedulesEndpoint)
+                  .askConfirmationFromTelegramUser(
+                    session,
+                    params['chatId'],
+                  ),
+        ),
+        'setSchedule': _i1.MethodConnector(
+          name: 'setSchedule',
+          params: {
+            'message': _i1.ParameterDescription(
+              name: 'message',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['schedules'] as _i7.SchedulesEndpoint).setSchedule(
+                    session,
+                    params['message'],
+                  ),
+        ),
+        'findChatId': _i1.MethodConnector(
+          name: 'findChatId',
+          params: {
+            'from': _i1.ParameterDescription(
+              name: 'from',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['schedules'] as _i7.SchedulesEndpoint).findChatId(
+                    session,
+                    params['from'],
+                  ),
+        ),
+      },
+    );
+    modules['serverpod_auth_idp'] = _i9.Endpoints()
       ..initializeEndpoints(server);
-    modules['serverpod_auth_core'] = _i9.Endpoints()
+    modules['serverpod_auth_core'] = _i10.Endpoints()
       ..initializeEndpoints(server);
+  }
+
+  @override
+  _i1.FutureCallDispatch? get futureCalls {
+    return _i11.FutureCalls();
   }
 }

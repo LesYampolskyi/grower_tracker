@@ -22,6 +22,9 @@ import 'package:grower_tracker_server/src/generated/greetings/greeting.dart'
     as _i6;
 import 'package:grower_tracker_server/src/generated/telegram/telegram_profile.dart'
     as _i7;
+import 'package:grower_tracker_server/src/generated/future_calls_generated_models/telegram_future_call_send_message_model.dart'
+    as _i8;
+import 'package:grower_tracker_server/src/generated/future_calls.dart' as _i9;
 import 'package:grower_tracker_server/src/generated/protocol.dart';
 import 'package:grower_tracker_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -136,6 +139,8 @@ void withServerpod(
 }
 
 class TestEndpoints {
+  late final futureCalls = _FutureCalls();
+
   late final _AnonymousIdpEndpoint anonymousIdp;
 
   late final _EmailIdpEndpoint emailIdp;
@@ -145,6 +150,8 @@ class TestEndpoints {
   late final _GardenEndpoint garden;
 
   late final _GreetingEndpoint greeting;
+
+  late final _SchedulesEndpoint schedules;
 }
 
 class _InternalTestEndpoints extends TestEndpoints
@@ -174,7 +181,15 @@ class _InternalTestEndpoints extends TestEndpoints
       endpoints,
       serializationManager,
     );
+    schedules = _SchedulesEndpoint(
+      endpoints,
+      serializationManager,
+    );
   }
+}
+
+class _FutureCalls {
+  late final telegram = _TelegramFutureCall();
 }
 
 class _AnonymousIdpEndpoint {
@@ -770,5 +785,132 @@ class _GreetingEndpoint {
         await _localUniqueSession.close();
       }
     });
+  }
+}
+
+class _SchedulesEndpoint {
+  _SchedulesEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<void> askConfirmationFromTelegramUser(
+    _i1.TestSessionBuilder sessionBuilder,
+    int chatId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'schedules',
+            method: 'askConfirmationFromTelegramUser',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'schedules',
+          methodName: 'askConfirmationFromTelegramUser',
+          parameters: _i1.testObjectToJson({'chatId': chatId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<bool> setSchedule(
+    _i1.TestSessionBuilder sessionBuilder,
+    String message,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'schedules',
+            method: 'setSchedule',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'schedules',
+          methodName: 'setSchedule',
+          parameters: _i1.testObjectToJson({'message': message}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<bool>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i7.TelegramProfile?> findChatId(
+    _i1.TestSessionBuilder sessionBuilder,
+    String from,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'schedules',
+            method: 'findChatId',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'schedules',
+          methodName: 'findChatId',
+          parameters: _i1.testObjectToJson({'from': from}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i7.TelegramProfile?>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _TelegramFutureCall {
+  Future<void> sendMessage(
+    _i1.TestSessionBuilder sessionBuilder,
+    String message,
+    int chatId,
+  ) async {
+    var object = _i8.TelegramFutureCallSendMessageModel(
+      message: message,
+      chatId: chatId,
+    );
+    var _localUniqueSession = (sessionBuilder as _i1.InternalTestSessionBuilder)
+        .internalBuild();
+    try {
+      await _i9.TelegramSendMessageFutureCall().invoke(
+        _localUniqueSession,
+        object,
+      );
+    } finally {
+      await _localUniqueSession.close();
+    }
   }
 }

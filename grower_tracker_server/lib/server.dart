@@ -12,6 +12,8 @@ import 'src/generated/protocol.dart';
 import 'src/web/routes/app_config_route.dart';
 import 'src/web/routes/root.dart';
 
+late TelegramBotService botService;
+
 /// The starting point of the Serverpod server.
 Future<void> run(List<String> args) async {
   // Initialize Serverpod and connect it with your generated code.
@@ -141,7 +143,7 @@ void setUpTelegramBot(Serverpod pod) async {
   if (botToken == null) {
     throw "Telegram token not found";
   }
-  final botService = TelegramBotService(botToken, pod);
+  botService = TelegramBotService(botToken, pod);
   final isProduction = pod.runMode == ServerpodRunMode.production;
 
   try {

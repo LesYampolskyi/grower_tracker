@@ -20,3 +20,7 @@ garden:
 greeting:
   - hello:
   - telegramUsers:
+schedules:
+  - askConfirmationFromTelegramUser:
+  - setSchedule:
+  - findChatId:

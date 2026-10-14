@@ -56,6 +56,21 @@ class _EditPlantScreenState extends State<EditPlantScreen> {
           child: Column(
             spacing: 20,
             children: [
+              Container(
+                width: double.infinity,
+                alignment: Alignment.centerRight,
+                child: Text(
+                  "TelegramId: ${plant.telegramId.toString()}",
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                alignment: Alignment.centerRight,
+                child: Text(
+                  "AuthId: ${plant.authUserId.toString()}",
+                ),
+              ),
+
               PlantTypeSelector(
                 initCropType: cropType,
                 onCropTypeChanged: ((String, String) value) {

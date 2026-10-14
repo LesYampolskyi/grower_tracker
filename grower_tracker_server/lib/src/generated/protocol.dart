@@ -17,13 +17,15 @@ import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _i3;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _i4;
-import 'garden/models/plant_model.dart' as _i5;
-import 'greetings/greeting.dart' as _i6;
-import 'telegram/telegram_profile.dart' as _i7;
+import 'future_calls_generated_models/telegram_future_call_send_message_model.dart'
+    as _i5;
+import 'garden/models/plant_model.dart' as _i6;
+import 'greetings/greeting.dart' as _i7;
+import 'telegram/telegram_profile.dart' as _i8;
 import 'package:grower_tracker_server/src/generated/garden/models/plant_model.dart'
-    as _i8;
-import 'package:grower_tracker_server/src/generated/telegram/telegram_profile.dart'
     as _i9;
+import 'package:grower_tracker_server/src/generated/telegram/telegram_profile.dart'
+    as _i10;
 export 'garden/models/plant_model.dart';
 export 'greetings/greeting.dart';
 export 'telegram/telegram_profile.dart';
@@ -271,31 +273,40 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
 
-    if (t == _i5.PlantModel) {
-      return _i5.PlantModel.fromJson(data) as T;
+    if (t == _i5.TelegramFutureCallSendMessageModel) {
+      return _i5.TelegramFutureCallSendMessageModel.fromJson(data) as T;
     }
-    if (t == _i6.Greeting) {
-      return _i6.Greeting.fromJson(data) as T;
+    if (t == _i6.PlantModel) {
+      return _i6.PlantModel.fromJson(data) as T;
     }
-    if (t == _i7.TelegramProfile) {
-      return _i7.TelegramProfile.fromJson(data) as T;
+    if (t == _i7.Greeting) {
+      return _i7.Greeting.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i5.PlantModel?>()) {
-      return (data != null ? _i5.PlantModel.fromJson(data) : null) as T;
+    if (t == _i8.TelegramProfile) {
+      return _i8.TelegramProfile.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i6.Greeting?>()) {
-      return (data != null ? _i6.Greeting.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i7.TelegramProfile?>()) {
-      return (data != null ? _i7.TelegramProfile.fromJson(data) : null) as T;
-    }
-    if (t == List<_i8.PlantModel>) {
-      return (data as List).map((e) => deserialize<_i8.PlantModel>(e)).toList()
+    if (t == _i1.getType<_i5.TelegramFutureCallSendMessageModel?>()) {
+      return (data != null
+              ? _i5.TelegramFutureCallSendMessageModel.fromJson(data)
+              : null)
           as T;
     }
-    if (t == List<_i9.TelegramProfile>) {
+    if (t == _i1.getType<_i6.PlantModel?>()) {
+      return (data != null ? _i6.PlantModel.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i7.Greeting?>()) {
+      return (data != null ? _i7.Greeting.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i8.TelegramProfile?>()) {
+      return (data != null ? _i8.TelegramProfile.fromJson(data) : null) as T;
+    }
+    if (t == List<_i9.PlantModel>) {
+      return (data as List).map((e) => deserialize<_i9.PlantModel>(e)).toList()
+          as T;
+    }
+    if (t == List<_i10.TelegramProfile>) {
       return (data as List)
-              .map((e) => deserialize<_i9.TelegramProfile>(e))
+              .map((e) => deserialize<_i10.TelegramProfile>(e))
               .toList()
           as T;
     }
@@ -313,9 +324,11 @@ class Protocol extends _i1.SerializationManagerServer {
 
   static String? getClassNameForType(Type type) {
     return switch (type) {
-      _i5.PlantModel => 'PlantModel',
-      _i6.Greeting => 'Greeting',
-      _i7.TelegramProfile => 'TelegramProfile',
+      _i5.TelegramFutureCallSendMessageModel =>
+        'TelegramFutureCallSendMessageModel',
+      _i6.PlantModel => 'PlantModel',
+      _i7.Greeting => 'Greeting',
+      _i8.TelegramProfile => 'TelegramProfile',
       _ => null,
     };
   }
@@ -333,11 +346,13 @@ class Protocol extends _i1.SerializationManagerServer {
     }
 
     switch (data) {
-      case _i5.PlantModel():
+      case _i5.TelegramFutureCallSendMessageModel():
+        return 'TelegramFutureCallSendMessageModel';
+      case _i6.PlantModel():
         return 'PlantModel';
-      case _i6.Greeting():
+      case _i7.Greeting():
         return 'Greeting';
-      case _i7.TelegramProfile():
+      case _i8.TelegramProfile():
         return 'TelegramProfile';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -361,14 +376,17 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
     }
+    if (dataClassName == 'TelegramFutureCallSendMessageModel') {
+      return deserialize<_i5.TelegramFutureCallSendMessageModel>(data['data']);
+    }
     if (dataClassName == 'PlantModel') {
-      return deserialize<_i5.PlantModel>(data['data']);
+      return deserialize<_i6.PlantModel>(data['data']);
     }
     if (dataClassName == 'Greeting') {
-      return deserialize<_i6.Greeting>(data['data']);
+      return deserialize<_i7.Greeting>(data['data']);
     }
     if (dataClassName == 'TelegramProfile') {
-      return deserialize<_i7.TelegramProfile>(data['data']);
+      return deserialize<_i8.TelegramProfile>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -406,10 +424,10 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
     switch (t) {
-      case _i5.PlantModel:
-        return _i5.PlantModel.t;
-      case _i7.TelegramProfile:
-        return _i7.TelegramProfile.t;
+      case _i6.PlantModel:
+        return _i6.PlantModel.t;
+      case _i8.TelegramProfile:
+        return _i8.TelegramProfile.t;
     }
     return null;
   }

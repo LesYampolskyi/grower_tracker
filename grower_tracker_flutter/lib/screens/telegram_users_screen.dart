@@ -50,8 +50,10 @@ class _TelegramUsersScreenState extends State<TelegramUsersScreen> {
                 trailing: const Icon(
                   Icons.chevron_right,
                 ),
-                onTap: () {
-                  // Handle item click
+                onTap: () async {
+                  await client.schedules.askConfirmationFromTelegramUser(
+                    items[index].chatId,
+                  );
                 },
               );
             },
