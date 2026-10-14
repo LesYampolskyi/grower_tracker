@@ -1,19 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:grower_tracker_client/grower_tracker_client.dart';
+import 'package:grower_tracker_flutter/features/garden/plant_card.dart';
+import 'package:grower_tracker_flutter/main.dart';
 
-class GardenScreen extends StatelessWidget {
-  GardenScreen({super.key});
+class GardenScreen extends StatefulWidget {
+  const GardenScreen({super.key});
 
-  final items = [
-    ("🍅", "Tomato"),
-    ("🥕", "Carrot"),
-    ("🥒", "Cucumber"),
-    ("🧄", "Garlic"),
-    ("🧅", "Onion"),
-  ];
+  @override
+  State<GardenScreen> createState() => _GardenScreenState();
+}
+
+class _GardenScreenState extends State<GardenScreen> {
+  var items = <PlantModel>[];
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        ElevatedButton(
+          onPressed: () async {
+            var loaded = await client.garden.allByUser();
+            setState(() {
+              items = loaded;
+            });
+          },
+          child: Text("Update"),
+        ),
         Expanded(
           child: GridView.builder(
             padding: const EdgeInsets.all(10),
@@ -26,71 +38,27 @@ class GardenScreen extends StatelessWidget {
             ),
             itemBuilder: (context, index) {
               return index == 0
-                  ? Card(
-                      elevation: 3,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          12,
-                        ),
-                      ),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(
-                          12,
-                        ),
-                        onTap: () {
-                          Navigator.pushNamed(context, 'app/garden/detail');
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.add, size: 40, color: Colors.green),
-                              const SizedBox(height: 8),
-                              Text(
-                                "Add",
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                  ? PlantCard(
+                      onTap: () {
+                        Navigator.pushNamed(context, 'app/garden/add');
+                      },
+                      text: "Add",
+                      textIcon: Icon(Icons.add, size: 40, color: Colors.green),
                     )
-                  : Card(
-                      elevation: 3,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          12,
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              items[index - 1].$1,
-                              style: const TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              items[index - 1].$2,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
+                  : PlantCard(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          'app/garden/edit',
+                          arguments: items[index - 1],
+                        );
+                      },
+                      text: items[index - 1].cropType,
+                      textIcon: Text(
+                        items[index - 1].icon,
+                        style: const TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     );

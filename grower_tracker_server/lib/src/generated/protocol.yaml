@@ -11,6 +11,12 @@ emailIdp:
   - hasAccount:
 jwtRefresh:
   - refreshAccessToken:
+garden:
+  - all:
+  - allByUser:
+  - create:
+  - edit:
+  - delete:
 greeting:
   - hello:
   - telegramUsers:

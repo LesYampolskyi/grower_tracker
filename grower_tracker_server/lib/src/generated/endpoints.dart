@@ -15,11 +15,14 @@ import 'package:serverpod/serverpod.dart' as _i1;
 import '../auth/anonymous_idp_endpoint.dart' as _i2;
 import '../auth/email_idp_endpoint.dart' as _i3;
 import '../auth/jwt_refresh_endpoint.dart' as _i4;
-import '../greetings/greeting_endpoint.dart' as _i5;
-import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
-    as _i6;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+import '../garden/garden_endpoint.dart' as _i5;
+import '../greetings/greeting_endpoint.dart' as _i6;
+import 'package:grower_tracker_server/src/generated/garden/models/plant_model.dart'
     as _i7;
+import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
+    as _i8;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+    as _i9;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -43,7 +46,13 @@ class Endpoints extends _i1.EndpointDispatch {
           'jwtRefresh',
           null,
         ),
-      'greeting': _i5.GreetingEndpoint()
+      'garden': _i5.GardenEndpoint()
+        ..initialize(
+          server,
+          'garden',
+          null,
+        ),
+      'greeting': _i6.GreetingEndpoint()
         ..initialize(
           server,
           'greeting',
@@ -279,6 +288,87 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['garden'] = _i1.EndpointConnector(
+      name: 'garden',
+      endpoint: endpoints['garden']!,
+      methodConnectors: {
+        'all': _i1.MethodConnector(
+          name: 'all',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['garden'] as _i5.GardenEndpoint).all(session),
+        ),
+        'allByUser': _i1.MethodConnector(
+          name: 'allByUser',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['garden'] as _i5.GardenEndpoint).allByUser(
+                session,
+              ),
+        ),
+        'create': _i1.MethodConnector(
+          name: 'create',
+          params: {
+            'plant': _i1.ParameterDescription(
+              name: 'plant',
+              type: _i1.getType<_i7.PlantModel>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['garden'] as _i5.GardenEndpoint).create(
+                session,
+                params['plant'],
+              ),
+        ),
+        'edit': _i1.MethodConnector(
+          name: 'edit',
+          params: {
+            'plant': _i1.ParameterDescription(
+              name: 'plant',
+              type: _i1.getType<_i7.PlantModel>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['garden'] as _i5.GardenEndpoint).edit(
+                session,
+                params['plant'],
+              ),
+        ),
+        'delete': _i1.MethodConnector(
+          name: 'delete',
+          params: {
+            'plant': _i1.ParameterDescription(
+              name: 'plant',
+              type: _i1.getType<_i7.PlantModel>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['garden'] as _i5.GardenEndpoint).delete(
+                session,
+                params['plant'],
+              ),
+        ),
+      },
+    );
     connectors['greeting'] = _i1.EndpointConnector(
       name: 'greeting',
       endpoint: endpoints['greeting']!,
@@ -296,7 +386,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['greeting'] as _i5.GreetingEndpoint).hello(
+              ) async => (endpoints['greeting'] as _i6.GreetingEndpoint).hello(
                 session,
                 params['name'],
               ),
@@ -308,14 +398,14 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['greeting'] as _i5.GreetingEndpoint)
+              ) async => (endpoints['greeting'] as _i6.GreetingEndpoint)
                   .telegramUsers(session),
         ),
       },
     );
-    modules['serverpod_auth_idp'] = _i6.Endpoints()
+    modules['serverpod_auth_idp'] = _i8.Endpoints()
       ..initializeEndpoints(server);
-    modules['serverpod_auth_core'] = _i7.Endpoints()
+    modules['serverpod_auth_core'] = _i9.Endpoints()
       ..initializeEndpoints(server);
   }
 }

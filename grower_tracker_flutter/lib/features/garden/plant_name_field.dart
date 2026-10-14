@@ -1,24 +1,12 @@
 import 'package:flutter/material.dart';
 
-class PlantNameField extends StatefulWidget {
-  const PlantNameField({super.key});
-
-  @override
-  State<PlantNameField> createState() => _PlantNameFieldState();
-}
-
-class _PlantNameFieldState extends State<PlantNameField> {
-  final TextEditingController _textController = TextEditingController();
-  @override
-  void dispose() {
-    _textController.dispose();
-    super.dispose();
-  }
-
+class PlantNameField extends StatelessWidget {
+  const PlantNameField({super.key, required this.controller});
+  final TextEditingController controller;
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: _textController,
+      controller: controller,
       decoration: InputDecoration(
         labelText: 'Enter A Plant Label',
         hintText: 'Cherry',

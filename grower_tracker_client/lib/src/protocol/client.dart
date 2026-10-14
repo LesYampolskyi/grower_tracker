@@ -17,11 +17,13 @@ import 'package:serverpod_client/serverpod_client.dart' as _i2;
 import 'dart:async' as _i3;
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _i4;
-import 'package:grower_tracker_client/src/protocol/greetings/greeting.dart'
+import 'package:grower_tracker_client/src/protocol/garden/models/plant_model.dart'
     as _i5;
-import 'package:grower_tracker_client/src/protocol/telegram/telegram_profile.dart'
+import 'package:grower_tracker_client/src/protocol/greetings/greeting.dart'
     as _i6;
-import 'protocol.dart' as _i7;
+import 'package:grower_tracker_client/src/protocol/telegram/telegram_profile.dart'
+    as _i7;
+import 'protocol.dart' as _i8;
 
 /// {@category Endpoint}
 class EndpointAnonymousIdp extends _i1.EndpointAnonymousIdpBase {
@@ -264,6 +266,49 @@ class EndpointJwtRefresh extends _i4.EndpointRefreshJwtTokens {
   );
 }
 
+/// {@category Endpoint}
+class EndpointGarden extends _i2.EndpointRef {
+  EndpointGarden(_i2.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'garden';
+
+  _i3.Future<List<_i5.PlantModel>> all() =>
+      caller.callServerEndpoint<List<_i5.PlantModel>>(
+        'garden',
+        'all',
+        {},
+      );
+
+  _i3.Future<List<_i5.PlantModel>> allByUser() =>
+      caller.callServerEndpoint<List<_i5.PlantModel>>(
+        'garden',
+        'allByUser',
+        {},
+      );
+
+  _i3.Future<_i5.PlantModel> create(_i5.PlantModel plant) =>
+      caller.callServerEndpoint<_i5.PlantModel>(
+        'garden',
+        'create',
+        {'plant': plant},
+      );
+
+  _i3.Future<_i5.PlantModel> edit(_i5.PlantModel plant) =>
+      caller.callServerEndpoint<_i5.PlantModel>(
+        'garden',
+        'edit',
+        {'plant': plant},
+      );
+
+  _i3.Future<_i5.PlantModel> delete(_i5.PlantModel plant) =>
+      caller.callServerEndpoint<_i5.PlantModel>(
+        'garden',
+        'delete',
+        {'plant': plant},
+      );
+}
+
 /// This is an example endpoint that returns a greeting message through
 /// its [hello] method.
 /// {@category Endpoint}
@@ -274,15 +319,15 @@ class EndpointGreeting extends _i2.EndpointRef {
   String get name => 'greeting';
 
   /// Returns a personalized greeting message: "Hello {name}".
-  _i3.Future<_i5.Greeting> hello(String name) =>
-      caller.callServerEndpoint<_i5.Greeting>(
+  _i3.Future<_i6.Greeting> hello(String name) =>
+      caller.callServerEndpoint<_i6.Greeting>(
         'greeting',
         'hello',
         {'name': name},
       );
 
-  _i3.Future<List<_i6.TelegramProfile>> telegramUsers() =>
-      caller.callServerEndpoint<List<_i6.TelegramProfile>>(
+  _i3.Future<List<_i7.TelegramProfile>> telegramUsers() =>
+      caller.callServerEndpoint<List<_i7.TelegramProfile>>(
         'greeting',
         'telegramUsers',
         {},
@@ -320,7 +365,7 @@ class Client extends _i2.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i7.Protocol(),
+         _i8.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -332,6 +377,7 @@ class Client extends _i2.ServerpodClientShared {
     anonymousIdp = EndpointAnonymousIdp(this);
     emailIdp = EndpointEmailIdp(this);
     jwtRefresh = EndpointJwtRefresh(this);
+    garden = EndpointGarden(this);
     greeting = EndpointGreeting(this);
     modules = Modules(this);
   }
@@ -342,6 +388,8 @@ class Client extends _i2.ServerpodClientShared {
 
   late final EndpointJwtRefresh jwtRefresh;
 
+  late final EndpointGarden garden;
+
   late final EndpointGreeting greeting;
 
   late final Modules modules;
@@ -351,6 +399,7 @@ class Client extends _i2.ServerpodClientShared {
     'anonymousIdp': anonymousIdp,
     'emailIdp': emailIdp,
     'jwtRefresh': jwtRefresh,
+    'garden': garden,
     'greeting': greeting,
   };
 

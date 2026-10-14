@@ -1,27 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class CultivationField extends StatefulWidget {
-  const CultivationField({super.key});
-
-  @override
-  State<CultivationField> createState() => _CultivationFieldState();
-}
-
-class _CultivationFieldState extends State<CultivationField> {
-  final TextEditingController _daysController = TextEditingController();
-  int _inputValue = 0;
-
-  @override
-  void dispose() {
-    _daysController.dispose();
-    super.dispose();
-  }
+class CultivationField extends StatelessWidget {
+  const CultivationField({super.key, required this.controller});
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: _daysController,
+      controller: controller,
       keyboardType: TextInputType.number,
       inputFormatters: [
         FilteringTextInputFormatter.digitsOnly,
@@ -32,12 +19,6 @@ class _CultivationFieldState extends State<CultivationField> {
         labelText: 'Cultivation days',
         hintText: 'Example: 42',
       ),
-
-      onChanged: (value) {
-        setState(() {
-          _inputValue = int.tryParse(value) ?? 0;
-        });
-      },
     );
   }
 }

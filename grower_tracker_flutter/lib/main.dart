@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:grower_tracker_client/grower_tracker_client.dart';
 import 'package:flutter/material.dart';
 import 'package:grower_tracker_flutter/features/garden/add_plant_screen.dart';
+import 'package:grower_tracker_flutter/features/garden/edit_plant_screen.dart';
 import 'package:grower_tracker_flutter/screens/sign_in_screen.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
@@ -77,8 +78,14 @@ class MyApp extends StatelessWidget {
         '/app': (context) => const HomeScreen(),
       },
       onGenerateRoute: (settings) {
-        if (settings.name == 'app/garden/detail') {
+        if (settings.name == 'app/garden/add') {
           return MaterialPageRoute(builder: (_) => AddPlantScreen());
+        }
+        if (settings.name == 'app/garden/edit') {
+          return MaterialPageRoute(
+            builder: (_) => EditPlantScreen(),
+            settings: settings,
+          );
         }
 
         return null;

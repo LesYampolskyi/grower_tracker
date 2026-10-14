@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grower_tracker_flutter/config/snakbar_custom.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart'
     as auth;
 
@@ -58,22 +59,6 @@ class _SignInScreenState extends State<SignInScreen> {
             );
           },
         ),
-      ),
-    );
-  }
-}
-
-extension on BuildContext {
-  void showSnackBar({
-    required String message,
-    required Color backgroundColor,
-    required Color foregroundColor,
-  }) {
-    ScaffoldMessenger.of(this).showSnackBar(
-      SnackBar(
-        content: Text(message, style: TextStyle(color: foregroundColor)),
-        backgroundColor: backgroundColor,
-        duration: const Duration(seconds: 5),
       ),
     );
   }

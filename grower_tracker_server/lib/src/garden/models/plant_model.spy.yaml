@@ -1,0 +1,20 @@
+class: PlantModel
+table: plant_storage
+fields:
+    id: UuidValue?, defaultPersist=random_v7
+    
+    cultivationDays: int
+    name: String?
+    cropType: String
+    icon: String
+    plantedAt: DateTime
+    createdAt: DateTime, default=now
+    authUserId: UuidValue?, relation(parent=serverpod_auth_core_user)
+    telegramId: UuidValue?, relation(parent=telegram_profile)
+
+indexes:
+  user_profile_auth_user_idx:
+    fields: authUserId
+
+  telegram_profile_profile_idx:
+    fields: telegramId

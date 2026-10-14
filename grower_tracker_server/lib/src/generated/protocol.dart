@@ -17,10 +17,14 @@ import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _i3;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _i4;
-import 'greetings/greeting.dart' as _i5;
-import 'telegram/telegram_profile.dart' as _i6;
+import 'garden/models/plant_model.dart' as _i5;
+import 'greetings/greeting.dart' as _i6;
+import 'telegram/telegram_profile.dart' as _i7;
+import 'package:grower_tracker_server/src/generated/garden/models/plant_model.dart'
+    as _i8;
 import 'package:grower_tracker_server/src/generated/telegram/telegram_profile.dart'
-    as _i7;
+    as _i9;
+export 'garden/models/plant_model.dart';
 export 'greetings/greeting.dart';
 export 'telegram/telegram_profile.dart';
 
@@ -32,6 +36,134 @@ class Protocol extends _i1.SerializationManagerServer {
   static final Protocol _instance = Protocol._();
 
   static final List<_i2.TableDefinition> targetTableDefinitions = [
+    _i2.TableDefinition(
+      name: 'plant_storage',
+      dartName: 'PlantModel',
+      schema: 'public',
+      module: 'grower_tracker',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'gen_random_uuid_v7()',
+        ),
+        _i2.ColumnDefinition(
+          name: 'cultivationDays',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'name',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'cropType',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'icon',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'plantedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
+        ),
+        _i2.ColumnDefinition(
+          name: 'authUserId',
+          columnType: _i2.ColumnType.uuid,
+          isNullable: true,
+          dartType: 'UuidValue?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'telegramId',
+          columnType: _i2.ColumnType.uuid,
+          isNullable: true,
+          dartType: 'UuidValue?',
+        ),
+      ],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'plant_storage_fk_0',
+          columns: ['authUserId'],
+          referenceTable: 'serverpod_auth_core_user',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'plant_storage_fk_1',
+          columns: ['telegramId'],
+          referenceTable: 'telegram_profile',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'plant_storage_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'user_profile_auth_user_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'authUserId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'telegram_profile_profile_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'telegramId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
     _i2.TableDefinition(
       name: 'telegram_profile',
       dartName: 'TelegramProfile',
@@ -139,21 +271,31 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
 
-    if (t == _i5.Greeting) {
-      return _i5.Greeting.fromJson(data) as T;
+    if (t == _i5.PlantModel) {
+      return _i5.PlantModel.fromJson(data) as T;
     }
-    if (t == _i6.TelegramProfile) {
-      return _i6.TelegramProfile.fromJson(data) as T;
+    if (t == _i6.Greeting) {
+      return _i6.Greeting.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i5.Greeting?>()) {
-      return (data != null ? _i5.Greeting.fromJson(data) : null) as T;
+    if (t == _i7.TelegramProfile) {
+      return _i7.TelegramProfile.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i6.TelegramProfile?>()) {
-      return (data != null ? _i6.TelegramProfile.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i5.PlantModel?>()) {
+      return (data != null ? _i5.PlantModel.fromJson(data) : null) as T;
     }
-    if (t == List<_i7.TelegramProfile>) {
+    if (t == _i1.getType<_i6.Greeting?>()) {
+      return (data != null ? _i6.Greeting.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i7.TelegramProfile?>()) {
+      return (data != null ? _i7.TelegramProfile.fromJson(data) : null) as T;
+    }
+    if (t == List<_i8.PlantModel>) {
+      return (data as List).map((e) => deserialize<_i8.PlantModel>(e)).toList()
+          as T;
+    }
+    if (t == List<_i9.TelegramProfile>) {
       return (data as List)
-              .map((e) => deserialize<_i7.TelegramProfile>(e))
+              .map((e) => deserialize<_i9.TelegramProfile>(e))
               .toList()
           as T;
     }
@@ -171,8 +313,9 @@ class Protocol extends _i1.SerializationManagerServer {
 
   static String? getClassNameForType(Type type) {
     return switch (type) {
-      _i5.Greeting => 'Greeting',
-      _i6.TelegramProfile => 'TelegramProfile',
+      _i5.PlantModel => 'PlantModel',
+      _i6.Greeting => 'Greeting',
+      _i7.TelegramProfile => 'TelegramProfile',
       _ => null,
     };
   }
@@ -190,9 +333,11 @@ class Protocol extends _i1.SerializationManagerServer {
     }
 
     switch (data) {
-      case _i5.Greeting():
+      case _i5.PlantModel():
+        return 'PlantModel';
+      case _i6.Greeting():
         return 'Greeting';
-      case _i6.TelegramProfile():
+      case _i7.TelegramProfile():
         return 'TelegramProfile';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -216,11 +361,14 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
     }
+    if (dataClassName == 'PlantModel') {
+      return deserialize<_i5.PlantModel>(data['data']);
+    }
     if (dataClassName == 'Greeting') {
-      return deserialize<_i5.Greeting>(data['data']);
+      return deserialize<_i6.Greeting>(data['data']);
     }
     if (dataClassName == 'TelegramProfile') {
-      return deserialize<_i6.TelegramProfile>(data['data']);
+      return deserialize<_i7.TelegramProfile>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -258,8 +406,10 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
     switch (t) {
-      case _i6.TelegramProfile:
-        return _i6.TelegramProfile.t;
+      case _i5.PlantModel:
+        return _i5.PlantModel.t;
+      case _i7.TelegramProfile:
+        return _i7.TelegramProfile.t;
     }
     return null;
   }

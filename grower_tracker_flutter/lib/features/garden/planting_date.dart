@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class PlantingDate extends StatefulWidget {
-  const PlantingDate({super.key});
+  const PlantingDate({super.key, required this.onDateChanged});
 
+  final void Function(DateTime date) onDateChanged;
   @override
   State<PlantingDate> createState() => _PlantingDateState();
 }
@@ -53,6 +54,15 @@ class _PlantingDateState extends State<PlantingDate> {
     setState(() {
       _selectedDate = pickedDate;
       _selectedTime = pickedTime;
+      widget.onDateChanged(
+        DateTime(
+          pickedDate.year,
+          pickedDate.month,
+          pickedDate.day,
+          pickedTime.hour,
+          pickedTime.minute,
+        ),
+      );
     });
   }
 }
