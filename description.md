@@ -4,6 +4,8 @@ A full-stack Serverpod application featuring two front-ends: a Flutter mobile ap
 
 *Designed for setting up houseplant watering reminders in an effortless and convenient way.*
 
+2 mins demo video here: [![YouTube demo](https://shields.io)](https://youtu.be/BL1i25G5mjI)
+
 ---
 
 ## Overview & Problem Statement
